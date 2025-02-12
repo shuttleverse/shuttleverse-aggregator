@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: shuttleverse-aggregator
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/shuttleverse_dev
+
+
+vendors:
+  vendors:
+    yumo:
+      baseUrl: https://yumo.ca/collections
+      brands:
+          yonex: /yonex-
+          lining: /li-ning-
+          victor: /victor-
+      categories:
+        racket: badminton-racket
+        shoe: court-shoes
