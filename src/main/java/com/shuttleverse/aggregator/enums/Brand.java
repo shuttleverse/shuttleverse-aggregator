@@ -8,4 +8,9 @@ public enum Brand {
   public static Brand fromString(@NonNull String brand) {
     return Brand.valueOf(brand.toUpperCase());
   }
+
+  @Override
+  public String toString() {
+    return name().toLowerCase();
+  }
 }

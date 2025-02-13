@@ -4,6 +4,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/shuttleverse_dev
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers, health, info
 
 
 vendors:
@@ -11,9 +16,9 @@ vendors:
     yumo:
       baseUrl: https://yumo.ca/collections
       brands:
-          yonex: /yonex-
-          lining: /li-ning-
-          victor: /victor-
+        yonex: /yonex-
+        lining: /li-ning-
+        victor: /victor-
       categories:
         racket: badminton-racket
         shoe: court-shoes

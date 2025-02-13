@@ -10,10 +10,11 @@ import com.shuttleverse.aggregator.utils.PriceConverter;
 import java.util.stream.Collectors;
 
 public class ApiRacket extends ApiProduct {
+
   public Racket convertToRacket(Vendor vendor) {
     return Racket.builder()
         .name(this.title)
-        .brand(Brand.fromString(vendor.name()))
+        .brand(Brand.fromString(this.vendor))
         .vendor(vendor)
         .vendorUrl("")
         .variants(this.variants.stream().map(variant -> Variant.builder()

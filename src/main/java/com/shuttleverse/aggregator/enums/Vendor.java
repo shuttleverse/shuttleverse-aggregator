@@ -8,4 +8,9 @@ public enum Vendor {
   public static Vendor fromString(@NonNull String vendor) {
     return Vendor.valueOf(vendor.toUpperCase());
   }
+
+  @Override
+  public String toString() {
+    return name().toLowerCase();
+  }
 }

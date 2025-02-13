@@ -15,11 +15,6 @@ import lombok.Setter;
 public class VendorConfig {
   private Map<String, Vendor> vendors;
 
-  @PostConstruct
-  public void init() {
-    System.out.println("Vendors loaded: " + vendors);
-  }
-
   @Getter
   @Setter
   public static class Vendor {
