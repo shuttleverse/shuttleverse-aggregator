@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 @Setter
-@Document
+@Document(collection = "rackets")
 public class Racket extends Product {
-
 }

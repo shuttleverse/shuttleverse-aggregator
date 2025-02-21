@@ -1,6 +1,10 @@
 package com.shuttleverse.aggregator.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shuttleverse.aggregator.configs.VendorConfig;
+import com.shuttleverse.aggregator.enums.Category;
+import com.shuttleverse.aggregator.enums.Vendor;
 
 import java.util.List;
 
@@ -13,15 +17,39 @@ import lombok.Setter;
 @Setter
 public class ApiProduct {
   @NonNull
-  String title;
+  @JsonProperty("id")
+  protected String productId;
   @NonNull
-  String vendor; // the brand of the product
+  protected String title;
   @NonNull
-  List<ApiVariant> variants;
+  protected String handle;
   @NonNull
-  List<Image> images;
+  @JsonProperty("vendor")
+  protected String brand;
+  @NonNull
+  protected List<ApiVariant> variants;
+  @NonNull
+  protected List<Image> images;
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   public record Image(String src) {
+  }
+
+  protected String getVendorUrl(Vendor vendor, Category category) {
+    VendorConfig.Vendor vendorFromConfig = VendorConfig.getInstance().getVendors().get(vendor.toString());
+    StringBuilder url = new StringBuilder(vendorFromConfig.getBaseUrl());
+    switch (vendor) {
+      case YUMO, BADMINTON_AVENUE, BADMINTON_WAREHOUSE ->
+          url.append(vendorFromConfig.getAll().get(category.toString())).append("/products").append(
+              "/").append(this.handle);
+      case JOY, NYDHI -> {
+        int index = url.lastIndexOf("/");
+        if (index != -1) {
+          url.setLength(index);
+        }
+        url.append("/products/").append(this.handle);
+      }
+    }
+    return url.toString();
   }
 }

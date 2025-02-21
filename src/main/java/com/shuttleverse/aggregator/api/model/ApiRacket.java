@@ -1,6 +1,7 @@
 package com.shuttleverse.aggregator.api.model;
 
 import com.shuttleverse.aggregator.enums.Brand;
+import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Currency;
 import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.model.Racket;
@@ -13,10 +14,11 @@ public class ApiRacket extends ApiProduct {
 
   public Racket convertToRacket(Vendor vendor) {
     return Racket.builder()
+        .productId(this.productId)
         .name(this.title)
-        .brand(Brand.fromString(this.vendor))
+        .brand(Brand.fromString(this.brand))
         .vendor(vendor)
-        .vendorUrl("")
+        .vendorUrl(this.getVendorUrl(vendor, Category.RACKET))
         .variants(this.variants.stream().map(variant -> Variant.builder()
                 .title(variant.getTitle())
                 .price(vendor == Vendor.YUMO ?

@@ -36,24 +36,6 @@ class AggregationTaskTest {
     reset(vendorService, racketService);
   }
 
-//  @Test
-//  void testAggregateRacketsAsync() {
-//    // Mock API response
-//    ProductApiResponse<ApiRacket> mockResponse = new ProductApiResponse<>(List.of());
-//    when(vendorService.fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET))
-//        .thenReturn(mockResponse);
-//
-//    // Mock addRackets method (no return needed)
-//    doNothing().when(racketService).addRackets(mockResponse.products(), Vendor.YUMO);
-//
-//    // Manually call the scheduled method
-//    aggregationTask.aggregateRacketsAsync();
-//
-//    // Verify interactions
-//    verify(vendorService, times(1)).fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET);
-//    verify(racketService, times(1)).addRackets(mockResponse.products(), Vendor.YUMO);
-//  }
-
   @Test
   void testAggregateRacketsAsync_handlesException() {
     // Simulate an exception in vendorService
@@ -68,6 +50,6 @@ class AggregationTaskTest {
 
     // Verify that the exception was logged
     verify(vendorService, times(1)).fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET);
-    verify(racketService, never()).addRackets(any(), any()); // Shouldn't be called
+    verify(racketService, never()).updateRacketsList(any(), any()); // Shouldn't be called
   }
 }
