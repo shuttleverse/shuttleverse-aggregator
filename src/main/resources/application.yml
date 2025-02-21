@@ -4,16 +4,83 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/shuttleverse_dev
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers, health, info
 
 
 vendors:
   vendors:
     yumo:
       baseUrl: https://yumo.ca/collections
+      all:
+        racket: /badminton-rackets
+        shoe:
+        apparel:
       brands:
-          yonex: /yonex-
-          lining: /li-ning-
-          victor: /victor-
+        yonex: /yonex-
+        lining: /li-ning-
+        victor: /victor-
       categories:
         racket: badminton-racket
         shoe: court-shoes
+        apparel:
+    joy:
+      baseUrl: https://joybadminton.com/collections
+      all:
+        racket: /all-badminton-rackets
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shoe:
+        apparel:
+    badminton_avenue:
+      baseUrl: https://www.badmintonavenue.com/collections
+      all:
+        racket: /rackets
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shoe:
+        apparel:
+    nydhi:
+      baseUrl: https://www.nydhi.com/collections
+      all:
+        racket: /badminton-rackets
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shoe:
+        apparel:
+    badminton_warehouse:
+      baseUrl: https://www.badmintonwarehouse.com/collections
+      all:
+        racket: /badminton-rackets
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shoe:
+        apparel:
+
