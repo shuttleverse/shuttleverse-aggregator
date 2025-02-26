@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/product")
-@CrossOrigin
 public interface ProductController {
   ResponseEntity<?> getProducts(@RequestParam(required = false) List<String> brands,
                                 @RequestParam(required = false) List<String> categories,
