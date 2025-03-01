@@ -18,6 +18,8 @@ services:
   app-dev:
     build: .
     container_name: shuttleverse-aggregator-dev
+    volumes:
+      - .:/app
     restart: on-failure
     environment:
       - SPRING_PROFILES_ACTIVE=dev
