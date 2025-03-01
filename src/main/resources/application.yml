@@ -1,19 +1,21 @@
 spring:
   application:
     name: shuttleverse-aggregator
+  data:
+    mongodb:
+      uri: mongodb://root:123456@mongodb:27017/shuttleverse-aggregator?authSource=admin
   devtools:
     restart:
       enabled: true
     livereload:
       enabled: true
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/shuttleverse_dev
 management:
   endpoints:
     web:
       exposure:
         include: loggers, health, info
+server:
+  port: 8080
 
 
 vendors:

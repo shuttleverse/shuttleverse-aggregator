@@ -30,6 +30,7 @@ public class AggregationTask {
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
 
   @Scheduled()
+//  @EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateRacketsAsync() {
     List<CompletableFuture<Void>> futures = VENDORS.stream()
