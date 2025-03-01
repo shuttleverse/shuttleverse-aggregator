@@ -5,31 +5,37 @@ services:
     image: mongo:latest
     container_name: mongodb
     restart: unless-stopped
-    env_file: .env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
     ports:
-      - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+      - "27017:27017"
     volumes:
       - db:/data/db
+    profiles:
+      - dev
 
-  app:
+  app-dev:
     build: .
-    container_name: shuttleverse-aggregator
+    container_name: shuttleverse-aggregator-dev
+    restart: on-failure
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    command: [ "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=dev" ]
     depends_on:
       - mongodb
+    profiles:
+      - dev
+
+  app-prod:
+    build: .
+    container_name: shuttleverse-aggregator-prod
     restart: on-failure
-    env_file: .env
-    volumes:
-      - .:/app
-    ports:
-      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
     environment:
-      SPRING_APPLICATION_JSON: '{
-          "spring.data.mongodb.uri" : "mongodb://$MONGODB_USER:$MONGODB_PASSWORD@mongodb:$MONGODB_DOCKER_PORT/$MONGODB_DATABASE?authSource=admin"
-        }'
-    command: ./mvnw spring-boot:run
+      - SPRING_PROFILES_ACTIVE=prod
+    command: [ "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=prod" ]
+    profiles:
+      - prod
 
 volumes:
   db:
