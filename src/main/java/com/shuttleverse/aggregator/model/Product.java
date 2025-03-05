@@ -6,6 +6,7 @@ import com.shuttleverse.aggregator.enums.Vendor;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
+import java.util.UUID;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

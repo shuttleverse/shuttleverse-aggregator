@@ -45,7 +45,7 @@ public class AggregationTask {
     try {
       ProductApiResponse<ApiRacket> apiRacketResponse =
           vendorService.fetchProductData(vendor, Category.RACKET);
-      racketService.updateRacketsList(apiRacketResponse.products(), vendor);
+      racketService.updateProductInformation(apiRacketResponse.products(), vendor);
     } catch (Exception e) {
       logger.error("Failed to fetch/update rackets for vendor {}: {}", vendor, e.getMessage(), e);
     }

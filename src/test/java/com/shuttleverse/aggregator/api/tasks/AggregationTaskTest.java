@@ -50,6 +50,6 @@ class AggregationTaskTest {
 
     // Verify that the exception was logged
     verify(vendorService, times(1)).fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET);
-    verify(racketService, never()).updateRacketsList(any(), any()); // Shouldn't be called
+    verify(racketService, never()).updateProductInformation(any(), any()); // Shouldn't be called
   }
 }
