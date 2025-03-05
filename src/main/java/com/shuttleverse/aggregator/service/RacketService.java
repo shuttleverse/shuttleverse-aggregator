@@ -4,6 +4,8 @@ import com.shuttleverse.aggregator.api.model.ApiProduct;
 import com.shuttleverse.aggregator.api.model.ApiRacket;
 import com.shuttleverse.aggregator.enums.Brand;
 import com.shuttleverse.aggregator.enums.Vendor;
+import com.shuttleverse.aggregator.model.BadmintonProductPriceHistory;
+import com.shuttleverse.aggregator.model.ProductPriceHistory;
 import com.shuttleverse.aggregator.model.Racket;
 import com.shuttleverse.aggregator.repository.RacketRepository;
 
@@ -11,45 +13,49 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
-public class RacketService {
+public class RacketService extends BadmintonProductService implements ProductService<ApiRacket> {
   private final RacketRepository racketRepository;
 
-  public void updateRacketsList(List<ApiRacket> rackets, Vendor vendor) {
-    List<String> productIds = new ArrayList<>();
-    List<Racket> newRackets = rackets.stream()
-        .filter(this::isSupportedBrand)
-        .map(apiRacket -> {
-          productIds.add(apiRacket.getProductId());
+  public RacketService(ProductHistoryService productHistoryService, RacketRepository racketRepository) {
+    super(productHistoryService);
+    this.racketRepository = racketRepository;
+  }
 
-          Racket racket = apiRacket.convertToRacket(vendor);
-          Optional<Racket> existingRacket =
-              racketRepository.findByProductId(racket.getProductId());
+  @Override
+  public void updateProductInformation(List<ApiRacket> rackets, Vendor vendor) {
+    Set<String> productIds = new HashSet<>();
+    List<Racket> newRackets = new ArrayList<>();
+    for (ApiRacket apiRacket : rackets) {
+      if (!isSupportedBrand(apiRacket) || productIds.contains(apiRacket.getProductId())) {
+        continue;
+      }
+      productIds.add(apiRacket.getProductId());
+      Racket racket = apiRacket.convertToRacket(vendor);
+      addProductPriceHistory(racket);
 
-          if (existingRacket.isPresent()) {
-            Racket existing = existingRacket.get();
-            existing.setVendorUrl(racket.getVendorUrl());
-            existing.setVariants(racket.getVariants());
-            return existing;
-          } else {
-            return racket;
-          }
-        })
-        .toList();
-
+      Optional<Racket> existingRacketOpt = racketRepository.findByProductId(racket.getProductId());
+      if (existingRacketOpt.isPresent()) {
+        Racket existingRacket = existingRacketOpt.get();
+        existingRacket.setVendorUrl(racket.getVendorUrl());
+        existingRacket.setVariants(racket.getVariants());
+      } else {
+        newRackets.add(racket);
+      }
+    }
     racketRepository.saveAll(newRackets);
+
     deleteOldProducts(vendor, productIds);
   }
 
-
-  private void deleteOldProducts(Vendor vendor, List<String> newProductIds) {
-    racketRepository.deleteByVendorAndProductIdNotIn(vendor, newProductIds);
+  private void deleteOldProducts(Vendor vendor, Set<String> newProductIds) {
+    List<String> productIdsToDelete = new ArrayList<>(newProductIds);
+    racketRepository.deleteByVendorAndProductIdNotIn(vendor, productIdsToDelete);
   }
 
   private boolean isSupportedBrand(ApiProduct apiProduct) {
@@ -61,4 +67,5 @@ public class RacketService {
       return false;
     }
   }
+
 }
