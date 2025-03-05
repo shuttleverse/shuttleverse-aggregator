@@ -5,7 +5,7 @@ import com.shuttleverse.aggregator.model.ProductPriceHistory;
 import com.shuttleverse.aggregator.model.Racket;
 import com.shuttleverse.aggregator.model.Variant;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public abstract class BadmintonProductService {
         .productId(racket.getProductId())
         .productName(racket.getName())
         .variantPrices(this.convertVariantListToMap(racket.getVariants()))
-        .timestamp(LocalDateTime.now())
+        .timestamp(new Date())
         .build();
     productHistoryService.addProductHistory(history);
   }
