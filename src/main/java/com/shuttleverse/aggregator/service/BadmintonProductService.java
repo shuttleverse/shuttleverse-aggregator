@@ -1,8 +1,8 @@
 package com.shuttleverse.aggregator.service;
 
 import com.shuttleverse.aggregator.model.BadmintonProductPriceHistory;
+import com.shuttleverse.aggregator.model.Product;
 import com.shuttleverse.aggregator.model.ProductPriceHistory;
-import com.shuttleverse.aggregator.model.Racket;
 import com.shuttleverse.aggregator.model.Variant;
 
 import java.util.Date;
@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 public abstract class BadmintonProductService {
   private final ProductHistoryService productHistoryService;
 
-  protected void addProductPriceHistory(Racket racket) {
+  protected void addProductPriceHistory(Product product) {
     ProductPriceHistory history = BadmintonProductPriceHistory.builder()
-        .productId(racket.getProductId())
-        .productName(racket.getName())
-        .variantPrices(this.convertVariantListToMap(racket.getVariants()))
+        .productId(product.getProductId())
+        .productName(product.getName())
+        .variantPrices(this.convertVariantListToMap(product.getVariants()))
         .timestamp(new Date())
         .build();
     productHistoryService.addProductHistory(history);
