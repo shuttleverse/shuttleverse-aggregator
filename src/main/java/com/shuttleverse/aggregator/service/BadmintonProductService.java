@@ -1,7 +1,8 @@
 package com.shuttleverse.aggregator.service;
 
+import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
 import com.shuttleverse.aggregator.model.BadmintonProductPriceHistory;
-import com.shuttleverse.aggregator.model.Product;
+import com.shuttleverse.aggregator.model.BadmintonProduct;
 import com.shuttleverse.aggregator.model.ProductPriceHistory;
 import com.shuttleverse.aggregator.model.Variant;
 
@@ -13,14 +14,14 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class BadmintonProductService {
+public abstract class BadmintonProductService<T extends ApiBadmintonProduct> implements ProductService<T> {
   private final ProductHistoryService productHistoryService;
 
-  protected void addProductPriceHistory(Product product) {
+  protected void addProductPriceHistory(BadmintonProduct badmintonProduct) {
     ProductPriceHistory history = BadmintonProductPriceHistory.builder()
-        .productId(product.getProductId())
-        .productName(product.getName())
-        .variantPrices(this.convertVariantListToMap(product.getVariants()))
+        .productId(badmintonProduct.getProductId())
+        .productName(badmintonProduct.getName())
+        .variantPrices(this.convertVariantListToMap(badmintonProduct.getVariants()))
         .timestamp(new Date())
         .build();
     productHistoryService.addProductHistory(history);

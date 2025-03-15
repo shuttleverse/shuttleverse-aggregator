@@ -10,15 +10,15 @@ import com.shuttleverse.aggregator.utils.PriceConverter;
 
 import java.util.stream.Collectors;
 
-public class ApiRacket extends ApiProduct {
+public class ApiRacket extends ApiBadmintonProduct {
 
-  public Racket convertToRacket(Vendor vendor) {
+  public Racket convertToModel(Vendor vendor, Category category) {
     return Racket.builder()
         .productId(this.productId)
         .name(this.title)
         .brand(Brand.fromString(this.brand))
         .vendor(vendor)
-        .vendorUrl(this.getVendorUrl(vendor, Category.RACKET))
+        .vendorUrl(this.getVendorUrl(vendor, category))
         .variants(this.variants.stream().map(variant -> Variant.builder()
                 .title(variant.getTitle())
                 .price(vendor == Vendor.YUMO ?

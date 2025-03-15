@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.shuttleverse.aggregator.configs.VendorConfig;
 import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
+import com.shuttleverse.aggregator.model.Racket;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public class ApiProduct {
+public abstract class ApiBadmintonProduct {
   @NonNull
   @JsonProperty("id")
   protected String productId;
@@ -52,4 +53,5 @@ public class ApiProduct {
     }
     return url.toString();
   }
+
 }
