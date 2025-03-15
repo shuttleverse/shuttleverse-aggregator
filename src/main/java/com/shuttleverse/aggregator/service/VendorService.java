@@ -2,7 +2,7 @@ package com.shuttleverse.aggregator.service;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shuttleverse.aggregator.api.model.ApiProduct;
+import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
 import com.shuttleverse.aggregator.configs.VendorConfig;
 import com.shuttleverse.aggregator.api.model.ProductApiResponse;
 import com.shuttleverse.aggregator.enums.Brand;
@@ -25,9 +25,9 @@ public class VendorService {
   private final WebClient webClient;
   private final ObjectMapper objectMapper;
 
-  public <T extends ApiProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
-                                                                       Brand brand,
-                                                                       Category category) {
+  public <T extends ApiBadmintonProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
+                                                                                Brand brand,
+                                                                                Category category) {
     String apiUrl = getVendorUrl(vendor, brand, category);
     JavaType javaType = getProductType(category);
 
@@ -47,8 +47,8 @@ public class VendorService {
         .block(); // Block to make the call synchronous
   }
 
-  public <T extends ApiProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
-                                                                       Category category) {
+  public <T extends ApiBadmintonProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
+                                                                                Category category) {
     StringBuilder sb = new StringBuilder(getVendorUrl(vendor, category));
     String pageOneUrl = sb.append("?limit=250&page=1").toString();
     String pageTwoUrl = sb.append("?limit=250&page=2").toString();
@@ -82,7 +82,7 @@ public class VendorService {
   }
 
   // deserialize JSON response
-  private <T extends ApiProduct> Mono<ProductApiResponse<T>> deserializeResponse(String responseBody, JavaType javaType) {
+  private <T extends ApiBadmintonProduct> Mono<ProductApiResponse<T>> deserializeResponse(String responseBody, JavaType javaType) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       ProductApiResponse<T> response = objectMapper.readValue(responseBody, javaType);
@@ -93,8 +93,8 @@ public class VendorService {
   }
 
   // Helper method to merge two API responses
-  private <T extends ApiProduct> ProductApiResponse<T> mergeResponses(ProductApiResponse<T> response1,
-                                                                      ProductApiResponse<T> response2) {
+  private <T extends ApiBadmintonProduct> ProductApiResponse<T> mergeResponses(ProductApiResponse<T> response1,
+                                                                               ProductApiResponse<T> response2) {
     List<T> products = response1.products();
     products.addAll(response2.products());
 

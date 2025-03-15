@@ -24,6 +24,7 @@ vendors:
       baseUrl: https://yumo.ca/collections
       all:
         racket: /badminton-rackets
+        shuttle: /badminton-shuttles
         shoe:
         apparel:
       brands:
@@ -34,10 +35,12 @@ vendors:
         racket: badminton-racket
         shoe: court-shoes
         apparel:
+        shuttle:
     joy:
       baseUrl: https://joybadminton.com/collections
       all:
         racket: /all-badminton-rackets
+        shuttle: /all-shuttlecock
         shoe:
         apparel:
       brands:
@@ -46,12 +49,14 @@ vendors:
         victor:
       categories:
         racket:
+        shuttle:
         shoe:
         apparel:
     badminton_avenue:
       baseUrl: https://www.badmintonavenue.com/collections
       all:
         racket: /rackets
+        shuttle: /shuttlecocks
         shoe:
         apparel:
       brands:
@@ -60,12 +65,14 @@ vendors:
         victor:
       categories:
         racket:
+        shuttle:
         shoe:
         apparel:
     nydhi:
       baseUrl: https://www.nydhi.com/collections
       all:
         racket: /badminton-rackets
+        shuttle: /shuttlecock
         shoe:
         apparel:
       brands:
@@ -74,12 +81,14 @@ vendors:
         victor:
       categories:
         racket:
+        shuttle:
         shoe:
         apparel:
     badminton_warehouse:
       baseUrl: https://www.badmintonwarehouse.com/collections
       all:
         racket: /badminton-rackets
+        shuttle: /shuttlecocks
         shoe:
         apparel:
       brands:
@@ -88,6 +97,7 @@ vendors:
         victor:
       categories:
         racket:
+        shuttle:
         shoe:
         apparel:
 

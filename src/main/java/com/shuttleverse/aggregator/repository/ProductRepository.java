@@ -1,7 +1,7 @@
 package com.shuttleverse.aggregator.repository;
 
 import com.shuttleverse.aggregator.enums.Vendor;
-import com.shuttleverse.aggregator.model.Product;
+import com.shuttleverse.aggregator.model.BadmintonProduct;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository<T extends Product> extends MongoRepository<T, String> {
+public interface ProductRepository<T extends BadmintonProduct> extends MongoRepository<T, String> {
   Optional<T> findByProductId(String productId);
 
   Optional<T> findByVendor(Vendor vendor);

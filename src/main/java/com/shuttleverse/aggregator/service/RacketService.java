@@ -1,11 +1,10 @@
 package com.shuttleverse.aggregator.service;
 
-import com.shuttleverse.aggregator.api.model.ApiProduct;
+import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
 import com.shuttleverse.aggregator.api.model.ApiRacket;
 import com.shuttleverse.aggregator.enums.Brand;
+import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
-import com.shuttleverse.aggregator.model.BadmintonProductPriceHistory;
-import com.shuttleverse.aggregator.model.ProductPriceHistory;
 import com.shuttleverse.aggregator.model.Racket;
 import com.shuttleverse.aggregator.repository.RacketRepository;
 
@@ -19,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class RacketService extends BadmintonProductService implements ProductService<ApiRacket> {
+public class RacketService extends BadmintonProductService<ApiRacket> implements ProductService<ApiRacket> {
   private final RacketRepository racketRepository;
 
   public RacketService(ProductHistoryService productHistoryService, RacketRepository racketRepository) {
@@ -36,7 +35,7 @@ public class RacketService extends BadmintonProductService implements ProductSer
         continue;
       }
       productIds.add(apiRacket.getProductId());
-      Racket racket = apiRacket.convertToRacket(vendor);
+      Racket racket = apiRacket.convertToModel(vendor, Category.RACKET);
       addProductPriceHistory(racket);
 
       Optional<Racket> existingRacketOpt = racketRepository.findByProductId(racket.getProductId());
@@ -58,8 +57,8 @@ public class RacketService extends BadmintonProductService implements ProductSer
     racketRepository.deleteByVendorAndProductIdNotIn(vendor, productIdsToDelete);
   }
 
-  private boolean isSupportedBrand(ApiProduct apiProduct) {
-    String brand = StringUtils.trimAllWhitespace(apiProduct.getBrand().toUpperCase());
+  private boolean isSupportedBrand(ApiBadmintonProduct apiBadmintonProduct) {
+    String brand = StringUtils.trimAllWhitespace(apiBadmintonProduct.getBrand().toUpperCase());
     try {
       Brand.valueOf(brand);
       return true;

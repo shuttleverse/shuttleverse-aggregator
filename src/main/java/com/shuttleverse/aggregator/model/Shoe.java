@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @Document
-public class Shoe extends Product {
+public class Shoe extends BadmintonProduct {
 
 }

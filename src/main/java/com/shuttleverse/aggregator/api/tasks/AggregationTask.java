@@ -1,10 +1,14 @@
 package com.shuttleverse.aggregator.api.tasks;
 
-import com.shuttleverse.aggregator.api.model.ApiRacket;
+import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
 import com.shuttleverse.aggregator.api.model.ProductApiResponse;
 import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
+import com.shuttleverse.aggregator.model.BadmintonProduct;
+import com.shuttleverse.aggregator.model.Product;
+import com.shuttleverse.aggregator.service.ProductService;
 import com.shuttleverse.aggregator.service.RacketService;
+import com.shuttleverse.aggregator.service.ShuttleService;
 import com.shuttleverse.aggregator.service.VendorService;
 
 import org.slf4j.Logger;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AggregationTask {
   private final VendorService vendorService;
   private final RacketService racketService;
+  private final ShuttleService shuttleService;
   private final List<Vendor> VENDORS = List.of(Vendor.values());
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
 
@@ -33,22 +38,14 @@ public class AggregationTask {
 //  @EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateRacketsAsync() {
-    List<CompletableFuture<Void>> futures = VENDORS.stream()
-        .map(vendor -> CompletableFuture.runAsync(() -> fetchAndUpdate(vendor),
-            Executors.newCachedThreadPool()))
-        .toList();
-
-    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    aggregateProductAsync(Category.RACKET, racketService);
   }
 
-  private void fetchAndUpdate(Vendor vendor) {
-    try {
-      ProductApiResponse<ApiRacket> apiRacketResponse =
-          vendorService.fetchProductData(vendor, Category.RACKET);
-      racketService.updateProductInformation(apiRacketResponse.products(), vendor);
-    } catch (Exception e) {
-      logger.error("Failed to fetch/update rackets for vendor {}: {}", vendor, e.getMessage(), e);
-    }
+  @Scheduled()
+//  @EventListener(ApplicationReadyEvent.class)
+  @Async
+  public void aggregateShuttlesAsync() {
+    aggregateProductAsync(Category.SHUTTLE, shuttleService);
   }
 
 
@@ -62,5 +59,26 @@ public class AggregationTask {
   @Async
   public void aggregateApparelsSync() {
 
+  }
+
+  private <T extends ApiBadmintonProduct> void aggregateProductAsync(Category category, ProductService<T> productService) {
+    List<CompletableFuture<Void>> futures = VENDORS.stream()
+        .map(vendor -> CompletableFuture.runAsync(() -> fetchAndUpdate(vendor, category, productService),
+            Executors.newCachedThreadPool()))
+        .toList();
+
+    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+  }
+
+  private <T extends ApiBadmintonProduct> void fetchAndUpdate(Vendor vendor,
+                                                              Category category,
+                                                              ProductService<T> productService) {
+    try {
+      ProductApiResponse<T> apiRacketResponse =
+          vendorService.fetchProductData(vendor, category);
+      productService.updateProductInformation(apiRacketResponse.products(), vendor);
+    } catch (Exception e) {
+      logger.error("Failed to fetch/update rackets for vendor {}: {}", vendor, e.getMessage(), e);
+    }
   }
 }
