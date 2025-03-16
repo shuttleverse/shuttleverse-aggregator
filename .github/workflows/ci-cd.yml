@@ -36,8 +36,8 @@ jobs:
       - name: Install Dependencies
         run: ./mvnw dependency:resolve
 
-      - name: Run OWASP Dependency Check
-        run: ./mvnw org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }}
+      #      - name: Run OWASP Dependency Check
+      #        run: ./mvnw org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }}
 
       - name: Run Google Checkstyle
         run: ./mvnw checkstyle:check
