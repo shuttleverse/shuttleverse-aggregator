@@ -11,7 +11,7 @@ on:
 jobs:
   # CI for pull requests
   ci:
-    name: Build, Test, and Security Check (PR)
+    name: Build, Test, and Security Check
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
@@ -37,7 +37,7 @@ jobs:
         run: ./mvnw dependency:resolve
 
       - name: Run OWASP Dependency Check
-        run: ./mvnw org.owasp:dependency-check-maven:check
+        run: ./mvnw org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }}
 
       - name: Run Google Checkstyle
         run: ./mvnw checkstyle:check
@@ -47,7 +47,7 @@ jobs:
 
   # CD for main branch
   cd:
-    name: Build & Push Docker Image (main)
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
