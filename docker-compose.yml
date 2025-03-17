@@ -16,7 +16,9 @@ services:
       - dev
 
   app-dev:
-    build: .
+    build:
+      context: .
+      target: build
     container_name: shuttleverse-aggregator-dev
     volumes:
       - .:/app
@@ -30,7 +32,9 @@ services:
       - dev
 
   app-prod:
-    build: .
+    build:
+      context: .
+      target: build
     container_name: shuttleverse-aggregator-prod
     restart: on-failure
     environment:
@@ -38,6 +42,5 @@ services:
     command: [ "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=prod" ]
     profiles:
       - prod
-
 volumes:
   db:

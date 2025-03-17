@@ -1,26 +1,29 @@
-FROM maven:3.9.9-eclipse-temurin-17 AS dev
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy pom.xml and .mvn separately to cache dependencies
+# Copy the pom.xml and .mvn separately to cache dependencies
 COPY ./pom.xml ./
 COPY .mvn .mvn/
 COPY mvnw mvnw.cmd ./
 
-# Download dependencies
 RUN mvn dependency:go-offline
 
-# Copy the entire project
 COPY . .
 
-# Expose the Spring Boot port
+# Option to specify build profile, default is 'dev'
+ARG SPRING_PROFILE=dev
+RUN mvn clean package -Dspring.profiles.active=${SPRING_PROFILE} -DskipTests
+
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/shuttleverse-aggregator.jar /app/shuttleverse-aggregator.jar
+
 EXPOSE 8080
 
 ENV SPRING_PROFILES_ACTIVE=dev
 
-# Run the application with spring-boot:run
-CMD ["mvn", "spring-boot:run", \
-     "-Dspring-boot.run.profiles=${SPRING_PROFILES_ACTIVE}", \
-     "-Dspring.devtools.restart.enabled=true", \
-     "-Dspring.devtools.livereload.enabled=true"]
+CMD ["java", "-jar", "/app/shuttleverse-aggregator.jar"]

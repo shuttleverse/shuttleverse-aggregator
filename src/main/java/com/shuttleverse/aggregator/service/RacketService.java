@@ -7,21 +7,31 @@ import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.model.Racket;
 import com.shuttleverse.aggregator.repository.RacketRepository;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+/**
+ * Service for managing badminton racket products.
+ */
 @Service
-public class RacketService extends BadmintonProductService<ApiRacket> implements ProductService<ApiRacket> {
+public class RacketService extends BadmintonProductService<ApiRacket> implements
+    ProductService<ApiRacket> {
+
   private final RacketRepository racketRepository;
 
-  public RacketService(ProductHistoryService productHistoryService, RacketRepository racketRepository) {
+  /**
+   * Constructs a RacketService.
+   *
+   * @param productHistoryService the service for managing product price histories
+   * @param racketRepository      the repository for CRUD operations on rackets
+   */
+  public RacketService(ProductHistoryService productHistoryService,
+      RacketRepository racketRepository) {
     super(productHistoryService);
     this.racketRepository = racketRepository;
   }

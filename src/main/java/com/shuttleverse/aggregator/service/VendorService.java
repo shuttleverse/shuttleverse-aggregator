@@ -3,31 +3,41 @@ package com.shuttleverse.aggregator.service;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
-import com.shuttleverse.aggregator.configs.VendorConfig;
 import com.shuttleverse.aggregator.api.model.ProductApiResponse;
+import com.shuttleverse.aggregator.configs.VendorConfig;
 import com.shuttleverse.aggregator.enums.Brand;
 import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.mapper.CategoryResponseMapper;
-
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+/**
+ * Service for fetching product data from external vendors.
+ */
 @Service
 @RequiredArgsConstructor
 public class VendorService {
+
   private final VendorConfig vendorConfig;
   private final WebClient webClient;
   private final ObjectMapper objectMapper;
 
+  /**
+   * Fetches product data from a vendor for a specific brand and category.
+   *
+   * @param vendor   the vendor from which to fetch the data
+   * @param brand    the brand of the products
+   * @param category the category of the products
+   * @param <T>      the type of product being fetched
+   * @return a {@link ProductApiResponse} containing the products from the vendor
+   */
   public <T extends ApiBadmintonProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
-                                                                                Brand brand,
-                                                                                Category category) {
+      Brand brand,
+      Category category) {
     String apiUrl = getVendorUrl(vendor, brand, category);
     JavaType javaType = getProductType(category);
 
@@ -47,8 +57,16 @@ public class VendorService {
         .block(); // Block to make the call synchronous
   }
 
+  /**
+   * Fetches product data from a vendor for a specific category without filtering by brand.
+   *
+   * @param vendor   the vendor from which to fetch the data
+   * @param category the category of the products
+   * @param <T>      the type of product being fetched
+   * @return a {@link ProductApiResponse} containing the products from the vendor
+   */
   public <T extends ApiBadmintonProduct> ProductApiResponse<T> fetchProductData(Vendor vendor,
-                                                                                Category category) {
+      Category category) {
     StringBuilder sb = new StringBuilder(getVendorUrl(vendor, category));
     String pageOneUrl = sb.append("?limit=250&page=1").toString();
     String pageTwoUrl = sb.append("?limit=250&page=2").toString();
@@ -71,6 +89,13 @@ public class VendorService {
         .block(); // Block to return synchronously
   }
 
+  /**
+   * Retrieves the correct response type for the given category.
+   *
+   * @param category the category of products to fetch
+   * @return the Java type for the product API response
+   * @throws IllegalArgumentException if no response type is mapped for the category
+   */
   private JavaType getProductType(Category category) {
     Class<?> responseType = CategoryResponseMapper.getResponseType(category);
     if (responseType == null) {
@@ -81,8 +106,16 @@ public class VendorService {
         responseType);
   }
 
-  // deserialize JSON response
-  private <T extends ApiBadmintonProduct> Mono<ProductApiResponse<T>> deserializeResponse(String responseBody, JavaType javaType) {
+  /**
+   * Deserializes the JSON response into the appropriate product API response type.
+   *
+   * @param responseBody the JSON response body as a string
+   * @param javaType     the Java type to deserialize into
+   * @param <T>          the type of product
+   * @return a {@link Mono} containing the deserialized product API response
+   */
+  private <T extends ApiBadmintonProduct> Mono<ProductApiResponse<T>> deserializeResponse(
+      String responseBody, JavaType javaType) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       ProductApiResponse<T> response = objectMapper.readValue(responseBody, javaType);
@@ -92,15 +125,32 @@ public class VendorService {
     }
   }
 
-  // Helper method to merge two API responses
-  private <T extends ApiBadmintonProduct> ProductApiResponse<T> mergeResponses(ProductApiResponse<T> response1,
-                                                                               ProductApiResponse<T> response2) {
+  /**
+   * Merges two product API responses by combining their product lists.
+   *
+   * @param response1 the first product API response
+   * @param response2 the second product API response
+   * @param <T>       the type of product
+   * @return a merged {@link ProductApiResponse} containing all products
+   */
+  private <T extends ApiBadmintonProduct> ProductApiResponse<T> mergeResponses(
+      ProductApiResponse<T> response1,
+      ProductApiResponse<T> response2) {
     List<T> products = response1.products();
     products.addAll(response2.products());
 
     return new ProductApiResponse<>(products);
   }
 
+  /**
+   * Constructs the vendor URL for the product API, using the provided vendor, brand, and category.
+   *
+   * @param vendor   the vendor from which to fetch the products
+   * @param brand    the brand of the products
+   * @param category the category of the products
+   * @return the constructed URL to make the API request
+   * @throws IllegalArgumentException if the vendor, brand, or category is not found
+   */
   private String getVendorUrl(Vendor vendor, Brand brand, Category category) {
     VendorConfig.Vendor vendorFromConfig = vendorConfig.getVendors().get(vendor.toString());
     StringBuilder url = new StringBuilder();
@@ -122,6 +172,15 @@ public class VendorService {
         .toString();
   }
 
+  /**
+   * Constructs the vendor URL for the product API using the provided vendor and category (no
+   * brand).
+   *
+   * @param vendor   the vendor from which to fetch the products
+   * @param category the category of the products
+   * @return the constructed URL to make the API request
+   * @throws IllegalArgumentException if the vendor or category is not found
+   */
   private String getVendorUrl(Vendor vendor, Category category) {
     VendorConfig.Vendor vendorFromConfig = vendorConfig.getVendors().get(vendor.toString());
     StringBuilder url = new StringBuilder();

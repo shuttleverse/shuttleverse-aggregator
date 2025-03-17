@@ -2,9 +2,11 @@ package com.shuttleverse.aggregator.service;
 
 import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
 import com.shuttleverse.aggregator.enums.Vendor;
-
 import java.util.List;
 
+/**
+ * Service interface for managing badminton products.
+ */
 public interface ProductService<T extends ApiBadmintonProduct> {
 
   /**

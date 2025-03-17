@@ -39,7 +39,7 @@ class AggregationTaskTest {
   @Test
   void testAggregateRacketsAsync_handlesException() {
     // Simulate an exception in vendorService
-    when(vendorService.fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET))
+    when(vendorService.fetchProductData(Vendor.YUMO, Category.RACKET))
         .thenThrow(new RuntimeException("Failed to fetch data"));
 
     // Capture logs
@@ -49,7 +49,7 @@ class AggregationTaskTest {
     aggregationTask.aggregateRacketsAsync();
 
     // Verify that the exception was logged
-    verify(vendorService, times(1)).fetchProductData(Vendor.YUMO, Brand.YONEX, Category.RACKET);
+    verify(vendorService, times(1)).fetchProductData(Vendor.YUMO, Category.RACKET);
     verify(racketService, never()).updateProductInformation(any(), any()); // Shouldn't be called
   }
 }
