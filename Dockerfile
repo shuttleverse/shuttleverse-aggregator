@@ -11,7 +11,9 @@ RUN mvn dependency:go-offline
 
 COPY . .
 
-RUN mvn clean package -DskipTests
+# Option to specify build profile, default is 'dev'
+ARG SPRING_PROFILE=dev
+RUN mvn clean package -Dspring.profiles.active=${SPRING_PROFILE} -DskipTests
 
 FROM openjdk:17-jdk-slim
 
@@ -22,6 +24,6 @@ COPY --from=build /app/target/shuttleverse-aggregator.jar /app/shuttleverse-aggr
 
 EXPOSE 8080
 
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=dev
 
 CMD ["java", "-jar", "/app/shuttleverse-aggregator.jar"]

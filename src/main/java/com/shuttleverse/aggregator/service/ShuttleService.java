@@ -7,22 +7,31 @@ import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.model.Shuttle;
 import com.shuttleverse.aggregator.repository.ShuttleRepository;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+/**
+ * Service for managing badminton shuttle products.
+ */
 @Service
-public class ShuttleService extends BadmintonProductService<ApiShuttle> implements ProductService<ApiShuttle> {
+public class ShuttleService extends BadmintonProductService<ApiShuttle> implements
+    ProductService<ApiShuttle> {
+
   private final ShuttleRepository shuttleRepository;
 
+  /**
+   * Constructor for ShuttleService.
+   *
+   * @param productHistoryService the service for managing product price histories
+   * @param shuttleRepository     the repository for CRUD operations on shuttles
+   */
   public ShuttleService(ProductHistoryService productHistoryService,
-                        ShuttleRepository shuttleRepository) {
+      ShuttleRepository shuttleRepository) {
     super(productHistoryService);
     this.shuttleRepository = shuttleRepository;
   }
