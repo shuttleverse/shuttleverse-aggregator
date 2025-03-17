@@ -12,21 +12,14 @@ import java.util.stream.Collectors;
 /**
  * Represents a badminton shuttle product fetched from a vendor API.
  *
- * <p>
- * Extends {@link ApiBadmintonProduct} and provides a method to convert the API response into the
- * internal {@link Shuttle} domain model used within the system.
+ * <p>Extends {@link ApiBadmintonProduct} and provides a method to convert the API response into
+ * the internal {@link Shuttle} domain model used within the system.
  * </p>
  */
 public class ApiShuttle extends ApiBadmintonProduct {
 
   /**
    * Converts this API shuttle object into a {@link Shuttle} domain model.
-   *
-   * <p>
-   * This method maps API fields such as product ID, title, brand, and variants to the internal
-   * {@link Shuttle} model. It also performs currency conversion for specific vendors (e.g., YUMO),
-   * generates the appropriate vendor URL, and collects image sources.
-   * </p>
    *
    * @param vendor   the vendor from which the shuttle product was fetched
    * @param category the product category (used for vendor URL generation)
@@ -40,7 +33,6 @@ public class ApiShuttle extends ApiBadmintonProduct {
         .vendor(vendor)
         .vendorUrl(this.getVendorUrl(vendor, category))
         .variants(this.variants.stream().map(variant -> Variant.builder()
-                .title(variant.getTitle())
                 .price(vendor == Vendor.YUMO
                     ? PriceConverter.convert(Currency.CAD, variant.getPrice()) :
                     variant.getPrice())
