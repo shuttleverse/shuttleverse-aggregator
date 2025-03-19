@@ -87,12 +87,20 @@ jobs:
             "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
           echo "::add-mask::${IDTOKEN}"
           echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
+          
+      - name: Check Permissions in Kubernetes
+        run: |
+          kubectl \
+          --token=$ \
+          --server= ${{ secrets.OKE_SERVER }} \
+          --insecure-skip-tls-verify \
+          auth can-i --list
 
       - name: Create Kubernetes Secret for MongoDB URI
         run: |
           kubectl \
-            --token=${{ env.idToken }} \
-            --server=${{ env.OKE_SERVER }} \
+            --token=$ \
+            --server=${{ secrets.OKE_SERVER }} \
             --insecure-skip-tls-verify \
             create secret generic mongodb-secret \
               --from-literal=MONGODB_PROD_URI=${{ secrets.MONGODB_PROD_URI }}
@@ -105,7 +113,7 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl \
-            --token=${{ env.idToken }} \
+            --token=$ \
             --server=${{ secrets.OKE_SERVER }} \
             --insecure-skip-tls-verify \
             apply -f deployment.yaml
