@@ -107,7 +107,7 @@ jobs:
           kubectl \
             --token=${{ env.idToken }} \
             --server=${{ secrets.OKE_SERVER }} \
-            --insecure-skip-tls-verify\
+            --insecure-skip-tls-verify \
             apply -f deployment.yaml
 
 
