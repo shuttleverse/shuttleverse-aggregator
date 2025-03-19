@@ -7,13 +7,13 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Represents badminton racket products.
+ * Represents badminton shuttle products.
  */
 @NoArgsConstructor
 @SuperBuilder
 @Getter
 @Setter
-@Document(collection = "rackets")
-public class Racket extends BadmintonProduct {
+@Document(collection = "shuttles")
+public class Shuttle extends BadmintonProduct {
 
 }

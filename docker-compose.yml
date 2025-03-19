@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - "27017:27017"
+    volumes:
+      - db:/data/db
+    profiles:
+      - dev
+
+  app-dev:
+    build:
+      context: .
+      target: build
+    container_name: shuttleverse-aggregator-dev
+    volumes:
+      - .:/app
+    restart: on-failure
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    command: [ "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=dev" ]
+    depends_on:
+      - mongodb
+    profiles:
+      - dev
+
+  app-prod:
+    build:
+      context: .
+      target: build
+    container_name: shuttleverse-aggregator-prod
+    restart: on-failure
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    command: [ "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=prod" ]
+    profiles:
+      - prod
+volumes:
+  db:

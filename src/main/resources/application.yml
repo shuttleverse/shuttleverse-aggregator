@@ -3,17 +3,101 @@ spring:
     name: shuttleverse-aggregator
   data:
     mongodb:
-      uri: mongodb://localhost:27017/shuttleverse_dev
+      uri: mongodb://root:123456@mongodb:27017/shuttleverse-aggregator?authSource=admin
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers, health, info
+server:
+  port: 8080
 
 
 vendors:
   vendors:
     yumo:
       baseUrl: https://yumo.ca/collections
+      all:
+        racket: /badminton-rackets
+        shuttle: /badminton-shuttles
+        shoe:
+        apparel:
       brands:
-          yonex: /yonex-
-          lining: /li-ning-
-          victor: /victor-
+        yonex: /yonex-
+        lining: /li-ning-
+        victor: /victor-
       categories:
         racket: badminton-racket
         shoe: court-shoes
+        apparel:
+        shuttle:
+    joy:
+      baseUrl: https://joybadminton.com/collections
+      all:
+        racket: /all-badminton-rackets
+        shuttle: /all-shuttlecock
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shuttle:
+        shoe:
+        apparel:
+    badminton_avenue:
+      baseUrl: https://www.badmintonavenue.com/collections
+      all:
+        racket: /rackets
+        shuttle: /shuttlecocks
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shuttle:
+        shoe:
+        apparel:
+    nydhi:
+      baseUrl: https://www.nydhi.com/collections
+      all:
+        racket: /badminton-rackets
+        shuttle: /shuttlecock
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shuttle:
+        shoe:
+        apparel:
+    badminton_warehouse:
+      baseUrl: https://www.badmintonwarehouse.com/collections
+      all:
+        racket: /badminton-rackets
+        shuttle: /shuttlecocks
+        shoe:
+        apparel:
+      brands:
+        yonex:
+        lining:
+        victor:
+      categories:
+        racket:
+        shuttle:
+        shoe:
+        apparel:
+
