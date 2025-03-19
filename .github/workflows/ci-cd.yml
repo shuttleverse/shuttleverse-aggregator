@@ -91,12 +91,10 @@ jobs:
       - name: Create Kubernetes Secret for MongoDB URI
         run: |
           kubectl create secret generic mongodb-secret \
-            --from-literal=MONGODB_PROD_URI=${{ secrets.MONGODB_PROD_URI }} \
-            --dry-run=client -o yaml > secret.yaml
-          kubectl apply \
             --token=${{ env.idToken }} \
             --server=${{ env.OKE_SERVER }} \
-            --insecure-skip-tls-verify -f secret.yaml
+            --insecure-skip-tls-verify
+            --from-literal=MONGODB_PROD_URI=${{ secrets.MONGODB_PROD_URI }} \
 
       - name: Inject Docker Username into Deployment YAML
         run: |
