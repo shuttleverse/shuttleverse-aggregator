@@ -91,10 +91,10 @@ jobs:
       - name: Check Permissions in Kubernetes
         run: |
           kubectl \
-          --token=$ \
-          --server= ${{ secrets.OKE_SERVER }} \
-          --insecure-skip-tls-verify \
-          auth can-i --list
+            --token=$ \
+            --server= ${{ secrets.OKE_SERVER }} \
+            --insecure-skip-tls-verify \
+            auth can-i --list
 
       - name: Create Kubernetes Secret for MongoDB URI
         run: |
