@@ -53,6 +53,12 @@ jobs:
 
     permissions:
       id-token: write # Required to receive OIDC tokens
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
 
     steps:
       - name: Checkout Code
@@ -76,47 +82,36 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/shuttleverse-aggregator:latest
 
-      - name: Create OIDC Token
-        id: create-oidc-token
-        run: |
-          AUDIENCE="oke-kubernetes-cluster"
-          OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-          IDTOKEN=$(curl \
-            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            -H "Accept: application/json; api-version=2.0" \
-            "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
-          echo "::add-mask::${IDTOKEN}"
-          echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
-          
-      - name: Check Permissions in Kubernetes
-        run: |
-          kubectl \
-            --token=$ \
-            --server= ${{ secrets.OKE_SERVER }} \
-            --insecure-skip-tls-verify \
-            auth can-i --list
+      # - name: Create OIDC Token
+      #   id: create-oidc-token
+      #   run: |
+      #     AUDIENCE="oke-kubernetes-cluster"
+      #     OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
+      #     IDTOKEN=$(curl \
+      #       -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+      #       -H "Accept: application/json; api-version=2.0" \
+      #       "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
+      #     echo "::add-mask::${IDTOKEN}"
+      #     echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
+      #     name: Install Kubectl for OKE
+
+      - name: Configure Kubectl
+        uses: oracle-actions/configure-kubectl-oke@v1.5.0
+        with:
+          cluster: ${{ secrets.OKE_CLUSTER_OCID }}
 
       - name: Create Kubernetes Secret for MongoDB URI
         run: |
-          kubectl \
-            --token=$ \
-            --server=${{ secrets.OKE_SERVER }} \
-            --insecure-skip-tls-verify \
-            create secret generic mongodb-secret \
-              --from-literal=MONGODB_PROD_URI=${{ secrets.MONGODB_PROD_URI }}
+          kubectl create secret generic mongodb-secret \
+            --from-literal=MONGODB_PROD_URI=${{ secrets.MONGODB_PROD_URI }}
 
       - name: Inject Docker Username into Deployment YAML
         run: |
           sed -i "s|docker-user|${{ secrets.DOCKER_USERNAME }}|g" k8s/deployment.yaml
 
-
       - name: Deploy to Kubernetes
         run: |
-          kubectl \
-            --token=$ \
-            --server=${{ secrets.OKE_SERVER }} \
-            --insecure-skip-tls-verify \
-            apply -f deployment.yaml
+          kubectl apply -f deployment.yaml
 
 
 
