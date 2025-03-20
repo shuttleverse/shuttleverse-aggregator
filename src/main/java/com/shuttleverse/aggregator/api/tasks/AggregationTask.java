@@ -38,11 +38,12 @@ public class AggregationTask {
   private final ShuttleService shuttleService;
   private final List<Vendor> vendors = List.of(Vendor.values());
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
+  private final String cronExpression = "0 17 * * *";
 
   /**
    * Aggregates racket data asynchronously for all vendors based on a set schedule.
    */
-  @Scheduled()
+  @Scheduled(cron = cronExpression)
   //@EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateRacketsAsync() {
@@ -52,7 +53,7 @@ public class AggregationTask {
   /**
    * Aggregates shuttle data asynchronously for all vendors based on a set schedule.
    */
-  @Scheduled()
+  @Scheduled(cron = cronExpression)
   //@EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateShuttlesAsync() {
@@ -62,7 +63,7 @@ public class AggregationTask {
   /**
    * Aggregates shoe data asynchronously for all vendors based on a set schedule.
    */
-  @Scheduled()
+  @Scheduled(cron = cronExpression)
   @Async
   public void aggregateShoesAsync() {
 
@@ -71,7 +72,7 @@ public class AggregationTask {
   /**
    * Aggregates apparel data asynchronously for all vendors based on a set schedule.
    */
-  @Scheduled()
+  @Scheduled(cron = cronExpression)
   @Async
   public void aggregateApparelsSync() {
 
