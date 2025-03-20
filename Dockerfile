@@ -1,4 +1,4 @@
-FROM maven:3.9.9-eclipse-temurin-17 AS build
+FROM --platform=linux/arm64 maven:3.9.9-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ COPY . .
 ARG SPRING_PROFILE=dev
 RUN mvn clean package -Dspring.profiles.active=${SPRING_PROFILE} -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM --platform=linux/arm64 openjdk:17-jdk-slim
 
 WORKDIR /app
 
