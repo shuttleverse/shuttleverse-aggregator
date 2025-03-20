@@ -52,7 +52,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
-      id-token: write # Required to receive OIDC tokens
+      id-token: write
+      
     env:
       OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
       OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
@@ -64,6 +65,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+        # ARM Simulation
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+        # Multi-arch build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -77,24 +86,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/shuttleverse-aggregator:latest --build-arg SPRING_PROFILE=prod .
-
-      - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/shuttleverse-aggregator:latest
-
-      # - name: Create OIDC Token
-      #   id: create-oidc-token
-      #   run: |
-      #     AUDIENCE="oke-kubernetes-cluster"
-      #     OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-      #     IDTOKEN=$(curl \
-      #       -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-      #       -H "Accept: application/json; api-version=2.0" \
-      #       "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
-      #     echo "::add-mask::${IDTOKEN}"
-      #     echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
-      #     name: Install Kubectl for OKE
+      - name: Build and Push ARM64 Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/arm64 
+          push: true 
+          tags: ${{ secrets.DOCKER_USERNAME }}/shuttleverse-aggregator:latest
+          build-args: |
+            SPRING_PROFILE=prod
 
       - name: Configure Kubectl
         uses: oracle-actions/configure-kubectl-oke@v1.5.0
