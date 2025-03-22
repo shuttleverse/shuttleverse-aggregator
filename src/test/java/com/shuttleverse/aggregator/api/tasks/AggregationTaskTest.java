@@ -2,14 +2,10 @@ package com.shuttleverse.aggregator.api.tasks;
 
 import static org.mockito.Mockito.*;
 
-import com.shuttleverse.aggregator.api.model.ApiRacket;
-import com.shuttleverse.aggregator.api.model.ProductApiResponse;
-import com.shuttleverse.aggregator.enums.Brand;
 import com.shuttleverse.aggregator.enums.Category;
 import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.service.RacketService;
 import com.shuttleverse.aggregator.service.VendorService;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
