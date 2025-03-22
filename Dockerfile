@@ -24,6 +24,8 @@ COPY --from=build /app/target/shuttleverse-aggregator.jar /app/shuttleverse-aggr
 
 EXPOSE 8080
 
-ENV SPRING_PROFILES_ACTIVE=dev
+ARG SPRING_PROFILE=dev
+
+ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-dev}
 
 CMD ["java", "-jar", "/app/shuttleverse-aggregator.jar"]
