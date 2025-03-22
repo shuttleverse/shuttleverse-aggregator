@@ -14,8 +14,6 @@ import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -38,13 +36,12 @@ public class AggregationTask {
   private final ShuttleService shuttleService;
   private final List<Vendor> vendors = List.of(Vendor.values());
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
-  private final String cronExpression = "0 17 * * *";
+  private final String cronExpression = "0 17 * * * *";
 
   /**
    * Aggregates racket data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  //@EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateRacketsAsync() {
     aggregateProductAsync(Category.RACKET, racketService);
@@ -54,7 +51,6 @@ public class AggregationTask {
    * Aggregates shuttle data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  //@EventListener(ApplicationReadyEvent.class)
   @Async
   public void aggregateShuttlesAsync() {
     aggregateProductAsync(Category.SHUTTLE, shuttleService);
@@ -66,7 +62,8 @@ public class AggregationTask {
   @Scheduled(cron = cronExpression)
   @Async
   public void aggregateShoesAsync() {
-
+    System.out.println("Aggregate shoes async");
+    // TODO
   }
 
   /**
@@ -75,7 +72,7 @@ public class AggregationTask {
   @Scheduled(cron = cronExpression)
   @Async
   public void aggregateApparelsSync() {
-
+    // TODO
   }
 
   /**
