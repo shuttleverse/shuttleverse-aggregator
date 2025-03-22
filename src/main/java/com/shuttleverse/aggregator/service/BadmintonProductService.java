@@ -41,16 +41,18 @@ public abstract class BadmintonProductService<T extends ApiBadmintonProduct> imp
   /**
    * Converts a list of variants into a map of variant titles to prices.
    *
-   * @param rackets the list of variants to be converted.
+   * @param variants the list of variants to be converted.
    * @return a map where the key is the variant title and the value is the variant price.
    */
-  private Map<String, Double> convertVariantListToMap(List<Variant> rackets) {
+  private Map<String, Double> convertVariantListToMap(List<Variant> variants) {
     Map<String, Double> variantMap = new HashMap<>();
 
-    for (Variant variant : rackets) {
+    for (Variant variant : variants) {
       // Sanitize the title by removing invalid characters
-      String sanitizedTitle = sanitizeKey(variant.getTitle());
-      variantMap.put(sanitizedTitle, variant.getPrice());
+      if (variant.getTitle() != null) {
+        String sanitizedTitle = sanitizeKey(variant.getTitle());
+        variantMap.put(sanitizedTitle, variant.getPrice());
+      }
     }
 
     return variantMap;

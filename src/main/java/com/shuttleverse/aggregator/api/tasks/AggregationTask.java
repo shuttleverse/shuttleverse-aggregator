@@ -10,11 +10,11 @@ import com.shuttleverse.aggregator.service.ShuttleService;
 import com.shuttleverse.aggregator.service.VendorService;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -35,14 +35,14 @@ public class AggregationTask {
   private final RacketService racketService;
   private final ShuttleService shuttleService;
   private final List<Vendor> vendors = List.of(Vendor.values());
+  private final ExecutorService executorService = Executors.newFixedThreadPool(5);
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
-  private final String cronExpression = "0 17 * * * *";
+  private final String cronExpression = "0 30 18 * * * *";
 
   /**
    * Aggregates racket data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  @Async
   public void aggregateRacketsAsync() {
     aggregateProductAsync(Category.RACKET, racketService);
   }
@@ -51,7 +51,6 @@ public class AggregationTask {
    * Aggregates shuttle data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  @Async
   public void aggregateShuttlesAsync() {
     aggregateProductAsync(Category.SHUTTLE, shuttleService);
   }
@@ -60,9 +59,7 @@ public class AggregationTask {
    * Aggregates shoe data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  @Async
   public void aggregateShoesAsync() {
-    System.out.println("Aggregate shoes async");
     // TODO
   }
 
@@ -70,7 +67,6 @@ public class AggregationTask {
    * Aggregates apparel data asynchronously for all vendors based on a set schedule.
    */
   @Scheduled(cron = cronExpression)
-  @Async
   public void aggregateApparelsSync() {
     // TODO
   }
@@ -88,7 +84,7 @@ public class AggregationTask {
     List<CompletableFuture<Void>> futures = vendors.stream()
         .map(vendor -> CompletableFuture.runAsync(
             () -> fetchAndUpdate(vendor, category, productService),
-            Executors.newCachedThreadPool()))
+            executorService))
         .toList();
 
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
@@ -109,11 +105,10 @@ public class AggregationTask {
       Category category,
       ProductService<T> productService) {
     try {
-      ProductApiResponse<T> apiRacketResponse =
-          vendorService.fetchProductData(vendor, category);
+      ProductApiResponse<T> apiRacketResponse = vendorService.fetchProductData(vendor, category);
       productService.updateProductInformation(apiRacketResponse.products(), vendor);
     } catch (Exception e) {
-      logger.error("Failed to fetch/update rackets for vendor {}: {}", vendor, e.getMessage(), e);
+      logger.error("Failed to fetch/update rackets for vendor {}: {}", vendor, e.getMessage());
     }
   }
 }
