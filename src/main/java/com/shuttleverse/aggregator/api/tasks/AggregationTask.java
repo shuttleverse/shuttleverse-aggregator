@@ -37,7 +37,7 @@ public class AggregationTask {
   private final List<Vendor> vendors = List.of(Vendor.values());
   private final ExecutorService executorService = Executors.newFixedThreadPool(5);
   private static final Logger logger = LoggerFactory.getLogger(AggregationTask.class);
-  private final String cronExpression = "0 30 18 * * * *";
+  private final String cronExpression = "0 0 19 * * *";
 
   /**
    * Aggregates racket data asynchronously for all vendors based on a set schedule.
