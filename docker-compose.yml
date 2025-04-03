@@ -19,6 +19,8 @@ services:
     build:
       context: .
       target: build
+    ports:
+      - "8080:8080"
     container_name: shuttleverse-aggregator-dev
     volumes:
       - .:/app
