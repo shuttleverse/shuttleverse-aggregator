@@ -33,6 +33,7 @@ public class ApiShuttle extends ApiBadmintonProduct {
         .vendor(vendor)
         .vendorUrl(this.getVendorUrl(vendor, category))
         .variants(this.variants.stream().map(variant -> Variant.builder()
+                .title(variant.getTitle())
                 .price(vendor == Vendor.YUMO
                     ? PriceConverter.convert(Currency.CAD, variant.getPrice()) :
                     variant.getPrice())
