@@ -1,14 +1,23 @@
 package com.shuttleverse.aggregator.service;
 
 import com.shuttleverse.aggregator.api.model.ApiBadmintonProduct;
-import com.shuttleverse.aggregator.model.BadmintonProduct;
+import com.shuttleverse.aggregator.api.model.ApiProduct;
+import com.shuttleverse.aggregator.enums.Category;
+import com.shuttleverse.aggregator.enums.Vendor;
 import com.shuttleverse.aggregator.model.BadmintonProductPriceHistory;
+import com.shuttleverse.aggregator.model.Product;
 import com.shuttleverse.aggregator.model.ProductPriceHistory;
+import com.shuttleverse.aggregator.model.Shuttle;
 import com.shuttleverse.aggregator.model.Variant;
+import com.shuttleverse.aggregator.repository.ProductRepository;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -28,7 +37,7 @@ public abstract class BadmintonProductService<T extends ApiBadmintonProduct> imp
    *
    * @param badmintonProduct the product for which the price history is being added.
    */
-  protected void addProductPriceHistory(BadmintonProduct badmintonProduct) {
+  protected void addProductPriceHistory(Product badmintonProduct) {
     ProductPriceHistory history = BadmintonProductPriceHistory.builder()
         .productId(badmintonProduct.getProductId())
         .productName(badmintonProduct.getName())
@@ -37,6 +46,34 @@ public abstract class BadmintonProductService<T extends ApiBadmintonProduct> imp
         .build();
     productHistoryService.addProductHistory(history);
   }
+
+//  protected <M extends Product> void updateProductInformationHelper(List<ApiProduct> products,
+//      Vendor vendor,
+//      ProductRepository<M> productRepository) {
+//    Set<String> productIds = new HashSet<>();
+//    List<Product> newProducts = new ArrayList<>();
+//
+//    for (ApiProduct product : products) {
+//      if (productIds.contains(product.getProductId())) {
+//        continue;
+//      }
+//
+//      productIds.add(product.getProductId());
+//      Product domainProduct = product.convertToModel(vendor, Category.SHUTTLE);
+//      addProductPriceHistory(domainProduct);
+//
+//      Optional<M> existingShuttleOpt =
+//          productRepository.findByProductId(product.getProductId());
+//      if (existingShuttleOpt.isPresent()) {
+//        Product existingShuttle = existingShuttleOpt.get();
+//        existingShuttle.setVendorUrl(domainProduct.getVendorUrl());
+//        existingShuttle.setVariants(domainProduct.getVariants());
+//      } else {
+//        newProducts.add(domainProduct);
+//      }
+//    }
+//    productRepository.saveAll((List<M>) newProducts);
+//  }
 
   /**
    * Converts a list of variants into a map of variant titles to prices.
