@@ -2,6 +2,7 @@ package com.shuttleverse.aggregator.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shuttleverse.aggregator.enums.Vendor;
+import com.shuttleverse.aggregator.model.Product;
 import java.util.List;
 
 /**

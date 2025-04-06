@@ -20,7 +20,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
-public abstract class ApiBadmintonProduct {
+public abstract class ApiBadmintonProduct implements ApiProduct {
 
   @NonNull
   @JsonProperty("id")
@@ -56,7 +56,7 @@ public abstract class ApiBadmintonProduct {
    * @return the full URL linking to the product on the vendor's website
    * @throws IllegalArgumentException if vendor is not supported
    */
-  protected String getVendorUrl(Vendor vendor, Category category) {
+  public String getVendorUrl(Vendor vendor, Category category) {
     VendorConfig.Vendor vendorFromConfig = VendorConfig.getInstance().getVendors()
         .get(vendor.toString());
     StringBuilder url = new StringBuilder(vendorFromConfig.getBaseUrl());
