@@ -16,8 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository<T extends Product> extends MongoRepository<T, String> {
 
-  void saveAll(List<T> products);
-
   /**
    * Finds a badminton product by its product ID.
    *
