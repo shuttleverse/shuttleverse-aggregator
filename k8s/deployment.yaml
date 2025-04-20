@@ -17,6 +17,11 @@ spec:
         - name: aggregator
           image: docker-user/shuttleverse-aggregator:latest
           env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET_KEY
             - name: MONGODB_PROD_URI
               valueFrom:
                 secretKeyRef:
