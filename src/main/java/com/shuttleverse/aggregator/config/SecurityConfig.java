@@ -24,7 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  @Value("${jwt.secret}")
+  @Value("${jwt.secret:test-secret}")
   private String jwtSecretKey;
 
   /**
