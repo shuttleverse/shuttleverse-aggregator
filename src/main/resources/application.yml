@@ -1,31 +1,40 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: shuttleverse-aggregator
+
   data:
     mongodb:
       uri: mongodb://root:123456@mongodb:27017/shuttleverse-aggregator?authSource=admin
+
   devtools:
     restart:
       enabled: true
+
     livereload:
       enabled: true
+  profiles:
+    default: dev
+
 management:
   endpoints:
     web:
       exposure:
         include: loggers, health, info
-server:
-  port: 8080
 
 eureka:
   client:
     service-url:
-      defaultZone:
-        http://localhost:8761/eureka/
-    register-with-eureka: false
-    fetch-registry: false
+      defaultZone: "http://shuttleverse-service-discovery:8761/eureka/"
+    register-with-eureka: true
+    fetch-registry: true
   instance:
     prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
 
 vendors:
   vendors:
@@ -109,4 +118,3 @@ vendors:
         shuttle:
         shoe:
         apparel:
-
