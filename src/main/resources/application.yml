@@ -5,13 +5,6 @@ spring:
   application:
     name: shuttleverse-aggregator
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
-          issuer-uri: https://accounts.google.com
-
   data:
     mongodb:
       uri: mongodb://root:123456@mongodb:27017/shuttleverse-aggregator?authSource=admin
@@ -22,6 +15,8 @@ spring:
 
     livereload:
       enabled: true
+  profiles:
+    default: dev
 
 management:
   endpoints:
@@ -37,6 +32,9 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET_KEY}
 
 vendors:
   vendors:
@@ -120,4 +118,3 @@ vendors:
         shuttle:
         shoe:
         apparel:
-
